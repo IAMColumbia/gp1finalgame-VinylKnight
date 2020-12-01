@@ -1,1 +1,7 @@
 Release Notes version 1 POC
+
+- Player Jumps and moves towards the left infinitely without stopping
+
+- Platforms Spawn indefinitely but the gap between the new platforms has an issue currently.
+
+- Player is restricted from jumping in the air and can only jump once they touch the ground.
