@@ -5,3 +5,7 @@ Release Notes version 1 POC
 - Platforms Spawn indefinitely but the gap between the new platforms has an issue currently.
 
 - Player is restricted from jumping in the air and can only jump once they touch the ground.
+
+- Platforms that the player has passed are removed from the game.
+
+-Spacing is randomized between the platforms but an error causes platforms to spawn within each other
