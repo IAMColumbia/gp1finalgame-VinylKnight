@@ -8,7 +8,13 @@ public class PlatformManager : MonoBehaviour
     public Transform generationPoint;
 
     public float distanceBetween;
+
     private float platformWidth;
+
+    [SerializeField]
+    private float distanceBetweenMin;
+    [SerializeField]
+    private float distanceBetweenMax;
 
     // Start is called before the first frame update
 
@@ -22,9 +28,9 @@ public class PlatformManager : MonoBehaviour
     {
         if (transform.position.x < generationPoint.position.x)
         {
+            distanceBetween = Random.Range(distanceBetweenMin, distanceBetweenMax);
             transform.position = new Vector3(transform.position.x + platformWidth + distanceBetween, transform.position.y, transform.position.z);
-            Instantiate(thePlatform, transform.position, transform.rotation);
-                
+            Instantiate(thePlatform, transform.position, transform.rotation);      
         }
     }
 }
