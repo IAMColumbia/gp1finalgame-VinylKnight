@@ -5,16 +5,21 @@ using UnityEngine;
 public class PlatformManager : MonoBehaviour
 {
     private float[] platformWidths;
-    public GameObject[] thePlatforms;
+    //public GameObject[] thePlatforms;
+    
     
     public GameObject thePlatform;
     public Transform generationPoint;
-
-    //public ObjectPooling theObjectPool;
+    public Transform maxHeightPoint;
+    public ObjectPooling[] theObjectPool;
 
     public float distanceBetween;
     private float platformWidth;
     private int platformSelector;
+    private float minHeight;
+    private float maxHeight;
+    public float maxHeightChange;
+    private float heightChange;
 
     [SerializeField]
     private float distanceBetweenMin;
@@ -26,12 +31,14 @@ public class PlatformManager : MonoBehaviour
     void Start()
     {
         //platformWidth = thePlatform.GetComponent<BoxCollider2D>().size.x;
-        platformWidths = new float[thePlatforms.Length];
+        platformWidths = new float[theObjectPool.Length];
 
-        for (int i = 0; i< thePlatforms.Length; i++)
+        for (int i = 0; i< theObjectPool.Length; i++)
         {
-            platformWidths[i] = thePlatforms[i].GetComponent<BoxCollider2D>().size.x;
+            platformWidths[i] = theObjectPool[i].pooledObject.GetComponent<BoxCollider2D>().size.x;
         }
+        minHeight = transform.position.y;
+        maxHeight = maxHeightPoint.position.y;
     }
 
     // Update is called once per frame
@@ -40,17 +47,27 @@ public class PlatformManager : MonoBehaviour
         if (transform.position.x < generationPoint.position.x)
         {
             distanceBetween = Random.Range(distanceBetweenMin, distanceBetweenMax);
-            transform.position = new Vector3(transform.position.x + platformWidths[platformSelector] + distanceBetween, transform.position.y, transform.position.z);
+            heightChange = transform.position.y + Random.Range(maxHeightChange, -maxHeightChange);
+            if (heightChange > maxHeight)
+            {
+                heightChange = maxHeight;
+            }
+            else if (heightChange < minHeight)
+            {
+                heightChange = minHeight;
+            }
+            transform.position = new Vector3(transform.position.x + (platformWidths[platformSelector] / 2) + distanceBetween, heightChange, transform.position.z);
 
-            platformSelector = Random.Range(0, thePlatforms.Length);
+            platformSelector = Random.Range(0, theObjectPool.Length);
 
-            //GameObject newPlatform = theObjectPool.GetPooledObject();
+            GameObject newPlatform = theObjectPool[platformSelector].GetPooledObject();
 
-            //newPlatform.transform.position = transform.position;
-            //newPlatform.transform.rotation = transform.rotation;
-            //newPlatform.SetActive(true);
-
-            Instantiate(thePlatforms[platformSelector], transform.position, transform.rotation);      
+            newPlatform.transform.position = transform.position;
+            newPlatform.transform.rotation = transform.rotation;
+            newPlatform.SetActive(true);
+            
+            transform.position = new Vector3(transform.position.x + (platformWidths[platformSelector]/ 2), transform.position.y, transform.position.z);
+            //Instantiate(thePlatforms[platformSelector], transform.position, transform.rotation);      
         }
     }
 }
