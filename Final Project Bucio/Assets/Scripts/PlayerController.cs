@@ -7,39 +7,83 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float speed;
     [SerializeField]
+    private float speedMultiplier;
+    [SerializeField]
+    private float speedIncreaseMilestone;
+   
+    [SerializeField]
     float jumpForce;
     [SerializeField]
     private bool isOnGround;
     [SerializeField]
     private LayerMask defineGround;
+    [SerializeField]
+    private Transform groundCheck;
+    [SerializeField]
+    private float groundCheckRadius;
+    [SerializeField]
+    private GameplayManager theGameplayManager;
    
     private float jumpTimeCounter;
-
+    private float speedMilestoneCount;
+    private float speedMilestoneCountStore;
+    private float speedStore;
+    private float speedIncreaseMilestoneStore;
+    
     public float jumpTime;
 
     private Rigidbody2D playerRigidBody;
-    private Collider2D playerCollider;
+    //private Collider2D playerCollider;
     private Animator playerAnimator;
 
     // Start is called before the first frame update
     void Start()
     {
         playerRigidBody = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<Collider2D>();
+        //playerCollider = GetComponent<Collider2D>();
         playerAnimator = GetComponent<Animator>();
         jumpTimeCounter = jumpTime;
+        speedStore = speed;
+        speedMilestoneCount = speedIncreaseMilestone;
+        speedMilestoneCountStore = speedMilestoneCount;
+        speedIncreaseMilestoneStore = speedIncreaseMilestone;
     }
 
     // Update is called once per frame
     void Update()
     {
-        isOnGround = Physics2D.IsTouchingLayers(playerCollider, defineGround);
+        //isOnGround = Physics2D.IsTouchingLayers(playerCollider, defineGround);
+        isOnGround = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, defineGround);
 
-        playerRigidBody.velocity = new Vector2(speed, playerRigidBody.velocity.y);
         UpdateJumpControl();
+        
+        playerRigidBody.velocity = new Vector2(speed, playerRigidBody.velocity.y);
+        
+        UpdateSpeedMultiplier();
+        
         playerAnimator.SetFloat("speed", playerRigidBody.velocity.x);
-
         playerAnimator.SetBool("Ground", isOnGround);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "killbox")
+        {
+            theGameplayManager.RestartGame();
+            speed = speedStore;
+            speedMilestoneCount = speedMilestoneCountStore;
+            speedIncreaseMilestone = speedIncreaseMilestoneStore;
+        }
+    }
+
+    private void UpdateSpeedMultiplier()
+    {
+        if (transform.position.x > speedMilestoneCount)
+        {
+            speedMilestoneCount += speedIncreaseMilestone;
+            speedIncreaseMilestone = speedIncreaseMilestone * speedMultiplier;
+            speed = speed * speedMultiplier;
+        }
     }
 
     private void UpdateJumpControl()
