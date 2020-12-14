@@ -9,6 +9,11 @@ public class GameplayManager : MonoBehaviour
 
     [SerializeField]
     private PlayerController thePlayer;
+    [SerializeField]
+    private DeathMenu theDeathMenu;
+
+    private ScoreManager theScoreManager;
+
     private Vector3 playerStartPoint;
 
     private PlatformRemover[] platformList;
@@ -18,6 +23,8 @@ public class GameplayManager : MonoBehaviour
     {
         platformStartPoint = platformGenerator.position;
         playerStartPoint = thePlayer.transform.position;
+
+        theScoreManager = FindObjectOfType<ScoreManager>();
     }
 
     // Update is called once per frame
@@ -27,12 +34,17 @@ public class GameplayManager : MonoBehaviour
     //}
     public void RestartGame()
     {
-        StartCoroutine("RestartGameCo");
-    }
-    public IEnumerator RestartGameCo()
-    {
+        theScoreManager.isScoreIncreasing = false;
         thePlayer.gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
+
+        theDeathMenu.gameObject.SetActive(true);
+
+        //StartCoroutine("RestartGameCo");
+    }
+
+    public void Reset()
+    {
+        theDeathMenu.gameObject.SetActive(false);
         platformList = FindObjectsOfType<PlatformRemover>();
         thePlayer.transform.position = playerStartPoint;
         for (int i = 0; i < platformList.Length; i++)
@@ -41,5 +53,23 @@ public class GameplayManager : MonoBehaviour
         }
         platformGenerator.position = platformStartPoint;
         thePlayer.gameObject.SetActive(true);
+        theScoreManager.scoreCount = 0;
+        theScoreManager.isScoreIncreasing = true;
     }
+    //public IEnumerator RestartGameCo()
+    //{
+    //    theScoreManager.isScoreIncreasing = false;
+    //    thePlayer.gameObject.SetActive(false);
+    //    yield return new WaitForSeconds(0.5f);
+    //    platformList = FindObjectsOfType<PlatformRemover>();
+    //    thePlayer.transform.position = playerStartPoint;
+    //    for (int i = 0; i < platformList.Length; i++)
+    //    {
+    //        platformList[i].gameObject.SetActive(false);
+    //    }
+    //    platformGenerator.position = platformStartPoint;
+    //    thePlayer.gameObject.SetActive(true);
+    //    theScoreManager.scoreCount = 0;
+    //    theScoreManager.isScoreIncreasing = true;
+    //}
 }
