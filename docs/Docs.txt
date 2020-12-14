@@ -1,0 +1,16 @@
+
+- Player Jumps and moves towards the left infinitely without stopping
+
+- Platforms Spawn indefinitely but the gap between the new platforms has an issue currently.
+
+- Player is restricted from jumping in the air and can only jump once they touch the ground.
+
+- Platforms that the player has passed are removed from the game.
+
+- Spacing is randomized between the platforms but an error causes platforms to spawn within each other
+
+- The platforms are placed within an array that activates and deactivates platforms in front of the player.
+
+- Spawn height for the platforms is also randomized.
+
+- jumping has been improved and the height of the jump can be affected by the player
